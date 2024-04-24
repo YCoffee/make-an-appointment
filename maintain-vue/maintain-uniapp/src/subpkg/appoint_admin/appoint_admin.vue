@@ -20,7 +20,6 @@
                     </uni-td>
                     <uni-td>
                         <view class="uni-group">
-                            <!-- <button class="uni-button" size="mini" type="primary">修改</button> -->
                             <button class="uni-button" size="mini" type="warn" @click="cancelAppoint(item.id, index)">取消预约</button>
                         </view>
                     </uni-td>

@@ -73,6 +73,7 @@ export function getArticles(params){
     })
 }
 
+
 // 删除预约信息
 export function deleteAppoint(appoint){
     return request({
@@ -122,7 +123,7 @@ export function subAppoint(appoint){
 export function getSort(){
     return request({
         method: 'get',
-        url: '/maintain/getSort'
+        url: '/getSorts'
     })
 }
 

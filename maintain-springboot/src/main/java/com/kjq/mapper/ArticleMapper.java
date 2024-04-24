@@ -47,4 +47,7 @@ public interface ArticleMapper {
 
     @Delete("delete from article where id = #{id};")
     boolean downArticle(Integer id);
+
+    @Select("select count(*) from article where article_status = 1")
+    Integer getTotals();
 }

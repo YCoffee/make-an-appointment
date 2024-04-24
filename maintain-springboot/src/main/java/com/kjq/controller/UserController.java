@@ -1,6 +1,5 @@
 package com.kjq.controller;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
@@ -10,6 +9,8 @@ import com.kjq.service.UserService;
 import com.kjq.utils.FFResult;
 import com.kjq.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -34,16 +35,33 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    /**
+     * 获取登录用户的信息
+     * @param token
+     * @return
+     */
     @GetMapping("/info")
     public String info(@RequestParam("token") String token){
+        if (StringUtils.isBlank(token)){
+            return JSONUtil.toJsonStr(FFResult.error(StatusCodeEnum.ERROR));
+        }
         Claims claims = jwtUtils.getClaimsByToken(token);
         return JSONUtil.toJsonStr(userService.getUserByAccount((String) claims.get("sub")));
     }
 
+    /**
+     * 小程序做登录注册
+     * @param req
+     * @param jsonObject
+     * @return
+     */
     @PostMapping("/signin")
     public String signin(HttpServletRequest req, @RequestBody JSONObject jsonObject){
         //获取用户的openid表示用户的账号，张三表示默认用户名
         String code = jsonObject.getStr("code");
+        if (StringUtils.isBlank(code)){
+            return JSONUtil.toJsonStr(FFResult.error(StatusCodeEnum.ERROR));
+        }
         String requestUrl = "https://api.weixin.qq.com/sns/jscode2session";
         Map<String, String> requestUrlParam = new HashMap<String, String>();
         requestUrlParam.put("appid", "wx0098d5972a06b2de");  //开发者设置中的appId
@@ -84,7 +102,7 @@ public class UserController {
                 result.append(line);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return JSONUtil.toJsonStr(FFResult.error(StatusCodeEnum.ERROR));
         } finally {
             try {
                 if (out != null) {
@@ -98,35 +116,70 @@ public class UserController {
             }
         }
         Map map = JSON.parseObject(result.toString(), Map.class);
-
         //实现登录返回token
         return JSONUtil.toJsonStr(userService.getToken(req, (String)map.get("openid")));
     }
 
+    /**
+     * 做头像上传
+     * @param file
+     * @return
+     */
     @PostMapping("/files")
     public String files(@RequestParam("file") MultipartFile file){
         return JSONUtil.toJsonStr(userService.upload(file));
     }
 
+    /**
+     * 修改用户的信息
+     * @param jsonObject
+     * @return
+     */
     @PutMapping("/updateUser")
     public String updateUser(@RequestBody JSONObject jsonObject){
         String name = jsonObject.getStr("name");
         String sex = jsonObject.getStr("sex");
+        if (StringUtils.isBlank(name) || StringUtils.isBlank(sex)){
+            return JSONUtil.toJsonStr(FFResult.error(StatusCodeEnum.ERROR));
+        }
         return JSONUtil.toJsonStr(userService.updateUser(name, sex));
     }
 
+    /**
+     * 分页查询用户信息
+     * @param page
+     * @param limit
+     * @return
+     */
     @Secured({"ROLE_admin"})
     @GetMapping("/admin/getUsers")
     public String getUsers(@RequestParam("page") Integer page, @RequestParam("limit") Integer limit){
+        if (!ObjectUtils.allNotNull(page, limit)){
+            return JSONUtil.toJsonStr(FFResult.error(StatusCodeEnum.ERROR));
+        }
+        //防止爬虫
+        if (limit > 50){
+            return JSONUtil.toJsonStr(FFResult.error(StatusCodeEnum.ERROR));
+        }
         return JSONUtil.toJsonStr(userService.getAdminUsers(page, limit));
     }
 
+    /**
+     * 管理员和维修师上传图片
+     * @param file
+     * @return
+     */
     @Secured({"ROLE_maintain", "ROLE_admin"})
     @PostMapping("/upload/avatar")
     public String upload(@RequestParam("file") MultipartFile file){
         return JSONUtil.toJsonStr(userService.addUpload(file));
     }
 
+    /**
+     * 管理员和维修师修改自己信息
+     * @param jsonObject
+     * @return
+     */
     @Secured({"ROLE_maintain", "ROLE_admin"})
     @PutMapping("/updateMaintainAdminUser")
     public String updateMaintainAdminUser(@RequestBody JSONObject jsonObject){
@@ -134,6 +187,9 @@ public class UserController {
         String password = jsonObject.getStr("password");
         String nPassword = jsonObject.getStr("nPassword");
         String vPassword = jsonObject.getStr("vPassword");
+        if(!ObjectUtils.anyNotNull(username, password, nPassword, vPassword)){
+            return JSONUtil.toJsonStr(FFResult.error(StatusCodeEnum.ERROR));
+        }
         return JSONUtil.toJsonStr(userService.updateMaintainAdminUser(username, password, nPassword, vPassword));
     }
 

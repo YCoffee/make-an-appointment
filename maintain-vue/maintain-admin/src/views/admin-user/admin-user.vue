@@ -32,11 +32,25 @@
       </el-table-column>
       <el-table-column prop="userPassword" label="密码">
       </el-table-column>
-      <el-table-column prop="avatarUrl" label="用户头像">
+      <el-table-column label="头像" width="91">
+        <template slot-scope="scope">
+            <el-image 
+              style="width: 70px; height: 70px"
+              :src="scope.row.avatarUrl" 
+              :preview-src-list="[scope.row.avatarUrl]"
+              fit="cover">
+            </el-image>
+        </template>
       </el-table-column>
       <el-table-column prop="gender" label="性别">
+        <template slot-scope="scope">
+          {{scope.row.gender==0?'男':scope.row.gender==1?'女':'保密'}}
+        </template>
       </el-table-column>
-      <el-table-column prop="userRole" label="角色">
+      <el-table-column label="角色">
+        <template slot-scope="scope">
+          {{scope.row.userRole == 0?'用户':scope.row.userRole==1?'管理员':'维修师'}}
+        </template>
       </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">

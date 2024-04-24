@@ -39,6 +39,7 @@ module.exports = {
   //   // 关闭mock服务
   //   // before: require('./mock/mock-server.js')
   // },
+  
   devServer: {
     proxy: {
       // 设置请求前缀，如果有请求前缀就转发，

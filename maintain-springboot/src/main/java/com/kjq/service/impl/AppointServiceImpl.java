@@ -12,6 +12,7 @@ import com.kjq.model.vo.AppointListVo;
 import com.kjq.model.vo.AppointVo;
 import com.kjq.service.AppointService;
 import com.kjq.utils.FFResult;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +35,7 @@ public class AppointServiceImpl implements AppointService {
 
     @Override
     public FFResult getAppoints(Integer page, Integer num, String name, String city, String skill, String time) {
-        if (name.equals("") && city.equals("") && skill.equals("") && time.equals("")){
+        if (!ObjectUtils.allNotNull(name, city, skill, time)){
             return FFResult.error(StatusCodeEnum.ERROR);
         }
         page = (page - 1) * num;
@@ -47,6 +48,7 @@ public class AppointServiceImpl implements AppointService {
 
     @Override
     public FFResult updateStatus(Map<String, String> newAppoint) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userMapper.queryAccountUser(username);

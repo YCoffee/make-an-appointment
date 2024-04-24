@@ -24,22 +24,6 @@ public class SortServiceImpl implements SortService {
     }
 
     @Override
-    public FFResult getAdminSorts(Integer page, Integer limit) {
-        page = (page - 1) * limit;
-        List<Sort> adminSorts = sortMapper.getAdminSorts(page, limit);
-        Sort sort = new Sort();
-        sort.setId(sortMapper.getTotal());
-        adminSorts.add(sort);
-        return FFResult.success(StatusCodeEnum.SUCCESS, adminSorts);
-    }
-
-    @Override
-    public FFResult getSortList() {
-
-        return FFResult.success(StatusCodeEnum.SUCCESS, sortMapper.getSortList());
-    }
-
-    @Override
     public FFResult addAdminSort(Sort sort) {
         sort.setCreateTime(DateUtil.formatDate(DateUtil.date()));
         sort.setSortStatus(1);

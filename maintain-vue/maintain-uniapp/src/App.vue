@@ -2,7 +2,7 @@
 import {login} from './api'
 	export default {
 		onLaunch: function() {
-			// 全局只调用一次
+			// 全局只调用一次，实现自动登录
 			login();
 		},
 		onShow: function() {

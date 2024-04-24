@@ -8,9 +8,8 @@
     cancelButton="none" 
     @input="input" />
     <view class="article-list" v-if="articles.length">
-
         <uni-card v-for="item in articles" :key="item.id" @click="toArticle(item.id)" :title="item.title" :extra="item.createTime.substring(0, 10)">
-            <text class="uni-body">{{item.content.substring(0, 40)}}</text>
+            <text class="uni-body">{{item.content.replace(/<[^<>]+>/g,"").replace(/\s/g,"").replace(/[\r\n]/g).substring(0, 40)}}</text>
         </uni-card>
     </view>
   </view>
@@ -64,6 +63,7 @@ export default {
                 searchText: this.kw,
             }).then((res) => {
                 this.articles.push(...res.data.data);
+                this.articles.pop();
             })
         }
     },

@@ -15,4 +15,5 @@ public class Article {
     private String title;
     private Integer articleStatus;
     private String content;
+
 }

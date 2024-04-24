@@ -1,12 +1,24 @@
-## 研究背景
+## 一、项目介绍
 
-### 技术选型
+### 背景
 
-后端：springboot，mybatis，mysql，springsecurity认证授权。
+​		传统家电维修服务过程中存在的信息不对称、效率低下、价值不透明、维修师技术水平参差不齐等问题。为了提高家电维修服务的效率和质量，设计并实现基于信息技术的家电维修服务管理系统，以解决维修收费不透明，维修师不专业等问题。系统采用先进技术和创新设计，促进用户与维修服务提供商的高效沟通。
 
-前端：vue，uni-app，UniUI，VUE-Element-Admin
+### 界面展示
 
-## 需求分析
+#### 微信小程序
+
+![](doc/Snipaste_2024-04-24_14-22-42.png)
+
+#### 维修师
+
+![](doc/Snipaste_2024-04-24_14-21-31.png)
+
+#### 管理员
+
+![](doc/Snipaste_2024-04-24_14-19-55.png)
+
+## 二、功能
 
 普通用户有如下功能：
 
@@ -34,154 +46,63 @@
 
 - 用户管理：对维修师用户和管理员用户进行管理。
 - 文章管理：对维修师写的文章进行管理。
-- 用户反馈管理：
-- 举报管理：
-- 分类管理：
+- 用户反馈管理：用户反馈管理。
+- 举报管理：举报消息管理。
+- 分类管理：分类管理。
 - 审核维修文章：审核管理员发布文章，审核不通过用户看不了。
 - 审核维修师上传的技能证书：审核荣誉证书。
-- 咨询消息管理：
-- 评分信息管理：
+- 咨询消息管理：咨询消息管理。
+- 评分信息管理：评分管理。
 
-## 系统设计
+## 三、技术栈
 
-### 数据库设计
+### 后端
 
-#### 用户表user
+- Spring Boot 2.3.4
+- MyBatis
+- MySQL
+- Spring Security认证授权
+- Redis
 
-|     字段     |               名称                |   类型   |     描述     |
-| :----------: | :-------------------------------: | :------: | :----------: |
-|      id      |               主键                |  bigint  |   用户主键   |
-|   username   |               昵称                | varcher  |   用户名称   |
-| userAccount  |               账号                | varcher  |   用户账号   |
-|  avatarUrl   |               头像                | varcher  | 用户头像地址 |
-|    gender    |               性别                | tinyint  | 用户性别0-1  |
-| userPassword |               密码                | varcher  |  加密后密码  |
-|  userStatus  |             用户状态              |   int    | 用户是否可用 |
-|  createTime  |             创建时间              | datetime |   创建时间   |
-|   userRole   | 用户角色(0用户，1维修师，2管理员) |   int    |   用户角色   |
+### 前端
 
-|      |      |      |      |
-| :--: | :--: | :--: | :--: |
+- Vue 2
+- Uni-app
+- Uni UI
+- VUE-Element-Admin
 
-#### 咨询信息表consult
+## 四、启动
 
-|     字段      |       名称       |   类型   |         描述         |
-| :-----------: | :--------------: | :------: | :------------------: |
-|      id       |       主键       |  bigint  |                      |
-|  userSendId   | 那个用户发布消息 |  bigint  |                      |
-| userAcceptId  | 那个用户接收数据 |  bigint  |                      |
-|    content    |     消息内容     |   text   |                      |
-| consultStatus |       状态       |   int    |                      |
-|  createTime   |     创建时间     | datetime |                      |
-|    status     |       状态       |   int    | 0没有回复，1已经回复 |
+### 修改配置yml文件
 
-#### 文章表article
+```yml
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 修改自己的数据库地址
+    url: xxx
+    # 数据库的用户名
+    username: xxx
+    # 数据库密码
+    password: xxx
+  redis:
+  	# 修改自己的redis地址
+    host: xxx
+    # 端口
+    port: xxx
+    # 密码，如果没有密码不写
+    password: xxx
+    database: 0 
+```
 
-删除时，需要真删数据。articleStatus状态被用于审核文章里
+### 启动项目
 
-|     字段      |    名称    |   类型   | 描述 |
-| :-----------: | :--------: | :------: | :--: |
-|      id       |    主键    |  bigint  |      |
-|    userId     | 管理员主键 |  bigint  |      |
-|    sortId     |    分类    |  bigint  |      |
-|  createTime   |  创建时间  | datetime |      |
-|     title     |    题目    | varchar  |      |
-| articleStatus |    状态    |   int    |      |
-|    content    |    内容    |   text   |      |
-
-#### 反馈信息表feedback
-
-|      字段      |   名称   |   类型   | 描述 |
-| :------------: | :------: | :------: | :--: |
-|       id       |   主键   |  bigint  |      |
-|     userId     | 用户主键 |  bigint  |      |
-|   createTime   | 创建时间 | datetime |      |
-|    content     |   内容   |   text   |      |
-| feedbackStatus |   状态   |   int    |      |
-
-#### 举报信息表report
-
-|     字段     |    名称    |   类型   | 描述 |
-| :----------: | :--------: | :------: | :--: |
-|      id      |    主键    |  bigint  |      |
-|  createTime  |  创建时间  | datetime |      |
-| reportStatus |    状态    |   int    |      |
-|   reportId   |  举报用户  |  bigint  |      |
-|  byReportId  | 被举报用户 |  bigint  |      |
-|   content    |  举报内容  |   text   |      |
-
-#### 评分信息表score
-
-|    字段     |    名称    |   类型   | 描述 |
-| :---------: | :--------: | :------: | :--: |
-|     id      |    主键    |  bigint  |      |
-| createTime  |  创建时间  | datetime |      |
-| scoreStatus |    状态    |   int    |      |
-|   scoreId   |  打分用户  |  bigint  |      |
-|  byScoreId  | 被打分用户 |  bigint  |      |
-|    point    |    分数    |   int    |      |
-
-#### 预约信息表appoint
-
-|     字段      |       名称       |   类型   |                             描述                             |
-| :-----------: | :--------------: | :------: | :----------------------------------------------------------: |
-|      id       |       主键       |  bigint  |                                                              |
-|  createTime   |     创建时间     | datetime |                                                              |
-| appointStatus |       状态       |   int    |                                                              |
-|   appointId   |     发布者id     |  bigint  |                                                              |
-|  byAppointId  |     预约者id     |  bigint  |                                                              |
-|    content    | 发布预约人的信息 |   text   |                                                              |
-|  appointTime  |     预约时间     | datetime |                         精确到某一天                         |
-|    message    | 预约人上传的消息 |   text   |                                                              |
-|    status     |     预约状态     |   int    | 0表示待预约阶段，1表示预约成功(管理员在这估算价格，变为状态2)，2表示价格估算成功(用户在这确认估算价格，变为状态3)，3表示维修成功(维修师在这确认，表示维修成功变为状态4待打分)，待打分阶段可以举报，4待打分(用户在这打分后编程状态5，表示完成)，5表示完成。 |
-
-| 字段  | 名称 |  类型  | 描述 |
-| :---: | :--: | :----: | :--: |
-| price | 价格 | double |      |
-
-
-
-#### 文章分类表sort
-
-|    字段    |   名称   |   类型   | 描述 |
-| :--------: | :------: | :------: | :--: |
-|     id     |   主键   |  bigint  |      |
-| createTime | 创建时间 | datetime |      |
-| sortStatus |   状态   |   int    |      |
-|  content   | 分类名称 | varchar  |      |
-
-#### 技能信息表skill
-
-|    字段     |   名称   |   类型   | 描述 |
-| :---------: | :------: | :------: | :--: |
-|     id      |   主键   |  bigint  |      |
-| createTime  | 创建时间 | datetime |      |
-| skillStatus |   状态   |   int    |      |
-|   userId    | 维修师id |  bigint  |      |
-|   content   | 技能名称 | varchar  |      |
-
-#### 证书荣誉表certificate
-
-删除时，需要真删数据。certificateStatus状态被用于审核证书了
-
-|       字段        |     名称     |   类型   | 描述 |
-| :---------------: | :----------: | :------: | :--: |
-|        id         |     主键     |  bigint  |      |
-|    createTime     |   创建时间   | datetime |      |
-| certificateStatus |     状态     |   int    |      |
-|      userId       |   维修师id   |  bigint  |      |
-|      content      |   证书名称   | varchar  |      |
-|       image       | 技能照片展示 | varchar  |      |
-
-#### 业务范围表（城市）scope
-
-|    字段     |     名称     |   类型   | 描述 |
-| :---------: | :----------: | :------: | :--: |
-|     id      |     主键     |  bigint  |      |
-| createTime  |   创建时间   | datetime |      |
-| scopeStatus |     状态     |   int    |      |
-|   content   | 服务城市名称 | varchar  |      |
-|   userId    |    维修师    |  bigint  |      |
-
-## 部署
+```shell
+# 1、启动springboot项目
+# 2、在maintain-admin打开终端，启动后台
+npm run dev
+# 3、在maintain-uniapp打开终端，启动小程序
+npm run dev:mp-weixin
+```
 

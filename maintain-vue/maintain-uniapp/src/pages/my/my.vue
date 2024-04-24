@@ -1,10 +1,7 @@
 <template>
   <view>
-    <uni-card :title="user.name" 
-    :isFull="true"
-     :thumbnail="user.avatar">
-    </uni-card>
     <uni-list>
+      <uni-list-chat :title="user.name" :avatar="user.avatar"></uni-list-chat>
       <uni-list-item :to="`/subpkg/update_user/update_user`" showArrow title="修改信息"/>
       <!-- status=1，预约成功，可以删除预约 -->
       <uni-list-item :to="`/subpkg/appoint_admin/appoint_admin?status=1`" showArrow title="预约管理"/>
@@ -62,5 +59,18 @@ export default {
     font-size: 14px;
     display: flex;
     color: #515151;
+  }
+  .div-avatar{
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+  }
+  .avatar-img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: inline-block;
+    border: none;
+    border-radius: 10px;
   }
 </style>

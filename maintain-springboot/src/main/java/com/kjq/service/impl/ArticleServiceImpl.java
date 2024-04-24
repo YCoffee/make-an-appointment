@@ -34,6 +34,10 @@ public class ArticleServiceImpl implements ArticleService {
 
         page = (page - 1) * num;
         List<Article> articles = articleMapper.getArticles(page, num, sortId, searchText);
+        Integer total = articleMapper.getTotals();
+        Article article = new Article();
+        article.setId(total);
+        articles.add(article);
         return FFResult.success(StatusCodeEnum.SUCCESS, articles);
     }
 

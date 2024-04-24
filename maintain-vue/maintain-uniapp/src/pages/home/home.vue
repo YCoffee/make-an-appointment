@@ -29,7 +29,8 @@ export default {
         // 文章列表
         articles: [],
         // articleList节流阀，防止发送过多数据请求
-        isloading: false
+        isloading: false,
+        total: 0,
       };
     },
     methods: {
@@ -55,7 +56,9 @@ export default {
                 sortId: this.value,
                 // 搜索查询的内容
             }).then((res) => {
+                this.total = res.data.data.pop().id;
                 this.articles.push(...res.data.data);
+                res.data
             })
             this.isloading = false;
         }
@@ -80,6 +83,7 @@ export default {
     onReachBottom(){
         // 节流阀打开就不发送请求
         if(this.isloading) return;
+        if(this.total <= this.articles.length) return;
         this.page += 1;
         this.getListArticle();
     },

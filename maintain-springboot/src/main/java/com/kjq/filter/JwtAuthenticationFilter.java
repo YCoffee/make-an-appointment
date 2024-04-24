@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
+
     @Autowired
     JwtUtils jwtUtils;
 
