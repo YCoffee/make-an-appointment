@@ -4,13 +4,13 @@ spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://127.0.0.1:3306/maintain?characterEncoding=utf-8&useSSL=false
-    username: root
-    password: kjq
+    url: xxx
+    username: xxx
+    password: xxx
   redis:
-    host: localhost
+    host: xxx
     port: 6379
-    password: kjq
+    password: xxx
     database: 0
 
 mybatis:
